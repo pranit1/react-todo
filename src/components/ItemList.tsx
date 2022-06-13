@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { addTodo,editTodo } from "../features/todoSlice";
+import { addTodo,checkTodo } from "../features/todoSlice";
 import { selectItems } from "../features/todoSlice";
 const TodoApp  = styled.div`
   display: grid;
@@ -111,6 +111,13 @@ const ItemList: React.FC = () => {
   const items = useAppSelector(selectItems);
   const dispatch = useAppDispatch()
   const [todo, setTodo] = useState<string>("");
+  const handleKeyUp = (e:any) => {
+    if(e.key === 'Enter') 
+      {
+        dispatch(addTodo(todo))
+        setTodo('')
+      }
+  }
   return (
    <TodoApp>
     <Header><h1>To Do</h1></Header>
@@ -119,21 +126,49 @@ const ItemList: React.FC = () => {
       <InputContainer>
           <Input placeholder="Add Todo.." 
             type="text"
+            value={todo}
             onChange={(e) => setTodo(e.target.value)}
-            onKeyUp={(e) => {if(e.key === 'Enter') dispatch(addTodo(todo))}}
+            onKeyUp={(e) => {handleKeyUp(e)}}
             />
-          <AddButton onClick={() => dispatch(addTodo(todo))}>Add Todo</AddButton>
+          <AddButton onClick={() => {dispatch(addTodo(todo));setTodo('')}}>Add Todo</AddButton>
       </InputContainer> 
       <TaskContainer>
         <h3>
-          Tasks
+          Todo Tasks
         </h3>
         <TaskList>
           {items.map((item) => {
-            return <Task key={item.id}>
-             <ItemCheckbox/> 
+            return (!item.done && <Task key={item.id}>
+             <ItemCheckbox onChange={(e:React.ChangeEvent<HTMLInputElement>) => dispatch(checkTodo(
+              {
+                id:item.id,
+                text:item.text,
+                done:e.target.checked
+              }
+              ))}/> 
               <p>{item.text}</p>
-            </Task>
+            </Task>)
+          })}
+        </TaskList>
+      </TaskContainer>
+      <TaskContainer>
+        <h3>
+          Completed Tasks
+        </h3>
+        <TaskList>
+          {items.map((item) => {
+            return (item.done && <Task key={item.id}>
+             <ItemCheckbox 
+             checked={item.done}
+             onChange={(e:React.ChangeEvent<HTMLInputElement>) => dispatch(checkTodo(
+              {
+                id:item.id,
+                text:item.text,
+                done:e.target.checked
+              }
+              ))}/> 
+              <p style={{textDecoration:'line-through 1px'}}>{item.text}</p>
+            </Task>)
           })}
         </TaskList>
       </TaskContainer>
