@@ -11,10 +11,8 @@ const TodoApp  = styled.div`
     grid-template-areas:
       "header header  header"
       "nav    content sidebar"
-      "nav    content sidebar"
-      "footer footer  footer";
-  
- 
+      "nav    content sidebar";
+  grid-template-rows:50px auto auto;
 `;
 const Header = styled.header`
   grid-area: header;
@@ -74,7 +72,6 @@ const AddButton = styled.button`
   cursor:pointer;
 `
 const TaskContainer = styled.div`
-  background-color:#f3f2f1;
   display:flex;
   flex-direction:column;
   width:790px;
@@ -96,7 +93,6 @@ const Task = styled.li`
 display:flex;
 gap:0.5em;
 justify-content:flex-start;
-background-color:lightblue;
 border-bottom:1px solid lightgrey;
 padding:0 5px 0 5px;
 p {
