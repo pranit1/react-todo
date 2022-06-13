@@ -14,7 +14,7 @@ const TodoApp  = styled.div`
       "nav    content sidebar"
       "footer footer  footer";
   
-  grid-template-rows: 50px 1fr 0px;
+ 
 `;
 const Header = styled.header`
   grid-area: header;
@@ -32,6 +32,7 @@ const Header = styled.header`
 const Nav = styled.nav`
   grid-area: nav;
   background-color:#f3f2f1;
+
 `
 const Sidebar = styled.aside`
   grid-area: sidebar;
@@ -100,9 +101,7 @@ border-bottom:1px solid lightgrey;
 padding:0 5px 0 5px;
 p {
   padding:0 1em 0 1em;
-}
-input['checkbox'] {
-  border-radius: 50%;
+  width:65%;
 }
 `
 const ItemCheckbox = styled.input.attrs({
@@ -166,7 +165,7 @@ const ItemList: React.FC = () => {
     <Sidebar>
       {isEdit &&
       (<>
-        <EditInput value={edittext} onChange={(e) => setEditText(e.target.value)}></EditInput>
+        <EditInput rows={5} value={edittext} onChange={(e) => setEditText(e.target.value)}></EditInput>
         <SubmitButton onClick={() => {dispatch(editTodo({id:edit.id, text:edittext, done:edit.done}));setEditText('');setIsEdit(false)}}>
           submit
         </SubmitButton>
