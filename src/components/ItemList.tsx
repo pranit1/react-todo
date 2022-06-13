@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { addTodo,checkTodo } from "../features/todoSlice";
+import { addTodo,checkTodo, deleteTodo, editTodo, Item } from "../features/todoSlice";
 import { selectItems } from "../features/todoSlice";
 const TodoApp  = styled.div`
   display: grid;
@@ -36,6 +36,9 @@ const Nav = styled.nav`
 const Sidebar = styled.aside`
   grid-area: sidebar;
   background-color:#f3f2f1;
+  padding:1em;
+  display:flex;
+  flex-direction:column;
 `
 
 const Main = styled.main`
@@ -67,6 +70,7 @@ const AddButton = styled.button`
   background-color:#0078d7;
   border:#0078d7;
   color:#ffffff;
+  cursor:pointer;
 `
 const TaskContainer = styled.div`
   background-color:#f3f2f1;
@@ -89,6 +93,7 @@ list-style:none;
 `
 const Task = styled.li`
 display:flex;
+gap:0.5em;
 justify-content:flex-start;
 background-color:lightblue;
 border-bottom:1px solid lightgrey;
@@ -107,10 +112,47 @@ height:1.3em;
 width:1.3em;
 align-self:center;
 `;
+const DeleteButton = styled.button`
+padding:0.4em;
+width:10%;
+background-color:#d07979;
+border:#d07979;
+color:#ffffff;
+align-self:center;
+cursor:pointer;
+`
+const EditButton = styled.button`
+padding:0.4em;
+width:10%;
+background-color:#0078d7;
+border:#0078d7;
+color:#ffffff;
+align-self:center;
+cursor:pointer;
+`
+const SubmitButton = styled.button`
+margin-top:5px;
+align-self:flex-end;
+width:30%;
+background-color:#0078d7;
+border:#0078d7;
+color:#ffffff;
+padding:0.2em;
+`
+const EditInput = styled.textarea`
+resize:none;
+`
 const ItemList: React.FC = () => {
   const items = useAppSelector(selectItems);
   const dispatch = useAppDispatch()
   const [todo, setTodo] = useState<string>("");
+  const [edittext, setEditText] = useState<string>("")
+  const [isEdit, setIsEdit] = useState(false);
+  const [edit, setEdit] = useState<Item>({
+    id:'',
+    text:'',
+    done:false
+  });
   const handleKeyUp = (e:any) => {
     if(e.key === 'Enter') 
       {
@@ -121,7 +163,16 @@ const ItemList: React.FC = () => {
   return (
    <TodoApp>
     <Header><h1>To Do</h1></Header>
-    <Sidebar/>
+    <Sidebar>
+      {isEdit &&
+      (<>
+        <EditInput value={edittext} onChange={(e) => setEditText(e.target.value)}></EditInput>
+        <SubmitButton onClick={() => {dispatch(editTodo({id:edit.id, text:edittext, done:edit.done}));setEditText('');setIsEdit(false)}}>
+          submit
+        </SubmitButton>
+      </>)}
+    </Sidebar>
+    
     <Main>
       <InputContainer>
           <Input placeholder="Add Todo.." 
@@ -147,6 +198,8 @@ const ItemList: React.FC = () => {
               }
               ))}/> 
               <p>{item.text}</p>
+              <EditButton onClick={() =>{ setEdit(item);setEditText(item.text);setIsEdit(true)}}>Edit</EditButton>
+              <DeleteButton onClick={() => dispatch(deleteTodo(item.id))}>Delete</DeleteButton>
             </Task>)
           })}
         </TaskList>
@@ -168,6 +221,7 @@ const ItemList: React.FC = () => {
               }
               ))}/> 
               <p style={{textDecoration:'line-through 1px'}}>{item.text}</p>
+              <DeleteButton onClick={() => dispatch(deleteTodo(item.id))}>Delete</DeleteButton>
             </Task>)
           })}
         </TaskList>

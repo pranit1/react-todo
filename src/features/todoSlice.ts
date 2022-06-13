@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, nanoid  } from '@reduxjs/toolkit'
 import type { RootState } from '../app/store'
 
-type Item = {
+export type Item = {
     id: string;
     text: string;
     done: boolean;
@@ -45,11 +45,20 @@ export const todoSlice = createSlice({
         if (existingItem) {
           existingItem.text = text
         }
+    },
+    deleteTodo(state,action:PayloadAction<string>) {
+      const id = action.payload;
+      const index = state.items.findIndex((item) => item.id === id);
+      state.items = [
+        ...state.items.slice(0, index),
+        ...state.items.slice(index + 1),
+      ];
+
     }
 
   }
 })
 
-export const {addTodo, editTodo, checkTodo  } = todoSlice.actions
+export const {addTodo, editTodo, checkTodo, deleteTodo } = todoSlice.actions
 export const selectItems = (state: RootState) => {console.log('state',state); return state.todos.items}
 export default todoSlice.reducer
