@@ -1,11 +1,9 @@
 {
-  "name": "journee-coding-test-todo-app01",
+  "name": "react-todo",
   "version": "0.1.0",
   "private": true,
+  "author":"Pranit",
   "dependencies": {
-    "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.3",
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^12.1.0",
